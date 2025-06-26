@@ -6,11 +6,23 @@
  */
 
 const WebSocket = require('ws');
+const jwt = require('jsonwebtoken');
 
 // Test configuration
 const SERVER_URL = 'ws://localhost:5959';
 const ROOM_ID = 'test-room-123';
-const TEST_TOKEN = process.env.CUSTOM_AUTH_TOKEN || 'your_secret_token_here';
+const JWT_SECRET = process.env.JWT_SECRET || 'your_super_secure_jwt_secret_key_change_this_in_production';
+
+// Generate valid JWT token for testing
+const TEST_TOKEN = jwt.sign(
+  { 
+    userId: 'test-user-123', 
+    roomId: ROOM_ID, 
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 hour
+  }, 
+  JWT_SECRET
+);
 
 console.log('🧪 Testing Custom Authentication');
 console.log('================================');

@@ -8,6 +8,7 @@ import { storeAsset, loadAsset } from './assets'
 import { makeOrLoadRoom, cleanupRooms, rooms, mutexes } from './rooms'
 import { RoomError } from './RoomError'
 import { Errors } from './Errors'
+import jwt from 'jsonwebtoken'
 // import { unfurl } from './unfurl'
 
 const PORT = 5959
@@ -34,44 +35,26 @@ async function validateCustomAuth(
     );
   }
 
-  // TODO: Implement your custom token verification logic here
-  // Examples:
-  // 1. Simple string comparison with environment variable
-  // 2. JWT verification with your own secret
-  // 3. API call to your authentication service
-  // 4. Database lookup
-  
-  // Example 1: Simple token comparison
-  const validToken = process.env.CUSTOM_AUTH_TOKEN;
-  if (validToken && token === validToken) {
+  // JWT verification
+  try {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('JWT_SECRET not configured');
+    }
+    const decoded = jwt.verify(token, secret) as any;
+    console.log('JWT token verified successfully for user:', decoded.userId || 'unknown');
+    
+    // Optional: Additional validation logic based on decoded payload
+    // For example, check if the token is for the correct room:
+    // if (decoded.roomId && decoded.roomId !== roomId) {
+    //   throw new Error('Token is not valid for this room');
+    // }
+    
     return true;
+  } catch (error) {
+    console.error('JWT verification failed:', error);
+    throw new RoomError('Invalid token', 401);
   }
-  
-  // Example 2: JWT verification (uncomment if you want to use JWT)
-  // try {
-  //   const secret = process.env.JWT_SECRET;
-  //   if (!secret) {
-  //     throw new Error('JWT_SECRET not configured');
-  //   }
-  //   const decoded = jwt.verify(token, secret);
-  //   // Additional validation logic based on decoded payload
-  //   return true;
-  // } catch (error) {
-  //   console.error('JWT verification failed:', error);
-  //   throw new RoomError('Invalid token', 401);
-  // }
-  
-  // Example 3: Room-specific validation
-  // if (roomId && token === `room_${roomId}_secret`) {
-  //   return true;
-  // }
-  
-  // If no validation method succeeds, reject the token
-  console.error('Invalid token provided');
-  throw new RoomError(
-    'Invalid authentication token',
-    401
-  );
 }
 
 // Simplified validation function that uses your custom auth
@@ -206,6 +189,37 @@ app.register(async (app) => {
     return res.status(500).send({ error: 'Internal server error' })
   }
 })
+
+  // Development endpoint to generate JWT tokens (remove in production)
+  app.post('/generate-token', async (req, res) => {
+    try {
+      const body = req.body as { userId?: string; roomId?: string } || {};
+      const { userId, roomId } = body;
+      
+      const secret = process.env.JWT_SECRET;
+      if (!secret) {
+        return res.status(500).send({ error: 'JWT_SECRET not configured' });
+      }
+      
+      const payload = {
+        userId: userId || `user_${Math.random().toString(36).substring(2, 8)}`,
+        roomId: roomId || 'default-room',
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 hour expiration
+      };
+      
+      const token = jwt.sign(payload, secret);
+      
+      return res.send({ 
+        token, 
+        payload,
+        expiresIn: '1 hour'
+      });
+    } catch (error) {
+      console.error('Token generation failed:', error);
+      return res.status(500).send({ error: 'Failed to generate token' });
+    }
+  });
 
   app.delete('/rooms/:roomId', {
     preHandler: validateTokenAndRoomApiMiddleware,

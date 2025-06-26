@@ -119,14 +119,40 @@ const LoginPage: React.FC = () => {
     }));
   };
 
-  const generateToken = () => {
-    // For development - in production, tokens should come from your auth system
-    // Use the same token that's configured in the backend .env file
-    const developmentToken = 'my_secret_token_123';
-    setFormData(prev => ({
-      ...prev,
-      token: developmentToken
-    }));
+  const generateToken = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Call backend to generate JWT token
+      const response = await fetch('http://localhost:5959/generate-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: formData.username || `user_${Math.random().toString(36).substring(2, 8)}`,
+          roomId: formData.roomId || 'default-room'
+        })
+      });
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      setFormData(prev => ({
+        ...prev,
+        token: data.token
+      }));
+      
+      console.log('Generated JWT token:', data.payload);
+    } catch (error) {
+      console.error('Token generation failed:', error);
+      alert('Failed to generate token. Make sure the backend server is running.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
