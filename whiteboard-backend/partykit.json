@@ -1,0 +1,7 @@
+{
+    "name": "tldraw-partykit-sockets-example",
+    "main": "src/server.ts",
+    "serve": {},
+    "compatibilityDate": "2024-08-27",
+    "port": 1234
+}

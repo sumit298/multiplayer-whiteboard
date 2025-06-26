@@ -1,0 +1,13 @@
+FROM node:22.13.1
+
+WORKDIR /app
+
+COPY package.json package.json
+COPY package-lock.json package-lock.json
+RUN npm install
+COPY src ./src 
+COPY tsconfig.json tsconfig.json
+RUN npm run build
+COPY script.sh script.sh
+
+CMD [ "sh", "script.sh" ]

@@ -1,0 +1,48 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('tldraw/tldraw.css');
+
+/* Global reset and base styles */
+* {
+	box-sizing: border-box;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+	font-family: 'Inter', sans-serif;
+	overscroll-behavior: none;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+	height: 100%;
+	width: 100%;
+}
+
+/* TLDraw specific styles */
+.tl-watermark_SEE-LICENSE {
+	display: none;
+	visibility: hidden;
+}
+
+.tlui-people-menu__avatars-button {
+	margin-right: 60px;
+}
+
+.tlui-style-panel,
+.tlui-style-panel__wrapper {
+	/* display at bottom-right hand corner */
+	position: fixed !important;
+	bottom: 0px;
+	right: 0;
+}
+
+/* Utility classes */
+.no-select {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
