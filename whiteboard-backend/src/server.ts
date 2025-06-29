@@ -22,6 +22,26 @@ app.register(cors, { origin: '*' })
 
 
 
+// Room credentials storage - in production, use a database
+const roomCredentials = new Map<string, string>();
+
+// Function to validate room credentials
+async function validateRoomCredentials(roomId: string, roomPassword: string): Promise<boolean> {
+  // For development, we'll use some predefined rooms
+  // In production, this should check against a database
+  
+  // Check if room already exists with credentials
+  if (roomCredentials.has(roomId)) {
+    return roomCredentials.get(roomId) === roomPassword;
+  }
+  
+  // For new rooms, accept any password and store it
+  // This allows dynamic room creation
+  roomCredentials.set(roomId, roomPassword);
+  console.log(`New room created: ${roomId}`);
+  return true;
+}
+
 // Custom verification function for your own authentication
 async function validateCustomAuth(
   token: string | undefined,
@@ -190,11 +210,32 @@ app.register(async (app) => {
   }
 })
 
-  // Development endpoint to generate JWT tokens (remove in production)
-  app.post('/generate-token', async (req, res) => {
+  // Health check endpoint for Docker health checks
+  app.get('/health', async (req, res) => {
+    return res.send({ 
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      version: process.version,
+      activeRooms: rooms.size
+    });
+  });
+
+  // Room authentication endpoint - validates room credentials and returns JWT
+  app.post('/auth/room', async (req, res) => {
     try {
-      const body = req.body as { userId?: string; roomId?: string } || {};
-      const { userId, roomId } = body;
+      const body = req.body as { username?: string; roomId?: string; roomPassword?: string } || {};
+      const { username, roomId, roomPassword } = body;
+      
+      if (!roomId || !roomPassword) {
+        return res.status(400).send({ error: 'Room ID and room password are required' });
+      }
+      
+      // Validate room credentials
+      const isValidRoom = await validateRoomCredentials(roomId, roomPassword);
+      if (!isValidRoom) {
+        return res.status(401).send({ error: 'Invalid room credentials' });
+      }
       
       const secret = process.env.JWT_SECRET;
       if (!secret) {
@@ -202,10 +243,10 @@ app.register(async (app) => {
       }
       
       const payload = {
-        userId: userId || `user_${Math.random().toString(36).substring(2, 8)}`,
-        roomId: roomId || 'default-room',
+        userId: username || `user_${Math.random().toString(36).substring(2, 8)}`,
+        roomId: roomId,
         iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + (60 * 60) // 1 hour expiration
+        exp: Math.floor(Date.now() / 1000) + (8 * 60 * 60) // 8 hours expiration
       };
       
       const token = jwt.sign(payload, secret);
@@ -213,11 +254,45 @@ app.register(async (app) => {
       return res.send({ 
         token, 
         payload,
-        expiresIn: '1 hour'
+        expiresIn: '8 hours'
       });
     } catch (error) {
-      console.error('Token generation failed:', error);
-      return res.status(500).send({ error: 'Failed to generate token' });
+      console.error('Room authentication failed:', error);
+      return res.status(500).send({ error: 'Authentication failed' });
+    }
+  });
+
+  // Leave room endpoint - deletes room contents and closes room
+  app.delete('/rooms/:roomId/leave', {
+    preHandler: validateTokenAndRoomApiMiddleware,
+    handler: async (req, res) => {
+      const roomId = (req.params as any).roomId as string
+
+      try {
+        console.log(`User leaving room: ${roomId}`);
+
+        const roomExists = rooms.has(roomId)
+        if (roomExists) {
+          const roomState = rooms.get(roomId)!
+          if (!roomState.room.isClosed()) {
+            roomState.room.close()
+          }
+          rooms.delete(roomId)
+          mutexes.delete(roomId)
+        }
+
+        // Remove room credentials from memory
+        roomCredentials.delete(roomId);
+
+        // Delete room files and folders
+        await cleanupRooms(roomId)
+
+        console.log(`Room ${roomId} deleted successfully`);
+        return res.send({ success: true, message: `Room ${roomId} and all its contents deleted successfully` })
+      } catch (error) {
+        console.error(`Error deleting room ${roomId}:`, error)
+        return res.status(500).send({ success: false, error: 'Failed to delete room' })
+      }
     }
   });
 
