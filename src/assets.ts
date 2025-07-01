@@ -1,6 +1,5 @@
 import { mkdir, readFile, writeFile, rm } from 'fs/promises'
 import { join, resolve } from 'path'
-import { Readable } from 'stream'
 
 // We are just using the filesystem to store assets
 const DIR = resolve('./rooms')
