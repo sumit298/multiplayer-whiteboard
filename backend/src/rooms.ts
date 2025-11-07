@@ -121,10 +121,26 @@ export async function makeOrLoadRoom(roomId: string) {
 				room: new TLSocketRoom({
 					initialSnapshot,
 					async onSessionRemoved(room, args) {
+						console.log(`Session removed from room ${roomId}. Sessions remaining: ${args.numSessionsRemaining}`);
+						
+						// Clean up room when all participants leave
 						if (args.numSessionsRemaining === 0) {
-							
-							room.close()
-
+							console.log(`All participants left room ${roomId}. Scheduling cleanup...`);
+							// Wait 5 minutes before cleanup in case someone rejoins
+							setTimeout(async () => {
+								if (room.getNumActiveSessions() === 0) {
+									console.log(`Cleaning up empty room ${roomId}`);
+									room.close();
+									rooms.delete(roomId);
+									mutexes.delete(roomId);
+									try {
+										await rm(join('./rooms', roomId), { force: true, recursive: true });
+										console.log(`Room folder ${roomId} deleted successfully`);
+									} catch (error) {
+										console.error(`Failed to delete room folder ${roomId}:`, error);
+									}
+								}
+							}, 1 * 60 * 1000); // 5 minutes
 						}
 					},
 					onDataChange() {
