@@ -342,7 +342,7 @@ const LoginPage: React.FC = () => {
             </button>
           </form>
 
-          <div style={styles.formFooter}>
+          {/* <div style={styles.formFooter}>
             <div style={styles.tips}>
               <h4 style={styles.tipsTitle}>Quick Tips</h4>
               <div style={styles.tipsList}>
@@ -350,8 +350,8 @@ const LoginPage: React.FC = () => {
                 <p style={styles.tipItem}>🔒 Keep your room password secure</p>
                 <p style={styles.tipItem}>👥 Your username will be visible to others</p>
               </div>
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
         </div>
       </div>
     </div>
@@ -362,22 +362,23 @@ const styles = {
   container: {
     minHeight: '100vh',
     display: 'flex',
-    background: 'linear-gradient(135deg, #1e1b4b 0%, #581c87 50%, #be185d 100%)',
+    background: '#000000',
     fontFamily: 'system-ui, -apple-system, sans-serif',
   },
   heroSection: {
     flex: 1,
     display: 'flex',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    padding: '4rem 2rem',
+    padding: '4rem 2rem 4rem 2rem',
     position: 'relative' as const,
     overflow: 'hidden',
+    background: 'linear-gradient(135deg, #000000 0%, #1a1a1a 100%)',
   },
   heroBackground: {
     position: 'absolute' as const,
     inset: 0,
-    opacity: 0.2,
+    opacity: 0.1,
   },
   floatingOrb1: {
     position: 'absolute' as const,
@@ -385,10 +386,10 @@ const styles = {
     left: '5rem',
     width: '18rem',
     height: '18rem',
-    background: 'linear-gradient(45deg, #06b6d4, #3b82f6)',
+    background: 'radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 50%, transparent 100%)',
     borderRadius: '50%',
     filter: 'blur(40px)',
-    animation: 'pulse 3s ease-in-out infinite',
+    animation: 'pulse 4s ease-in-out infinite',
   },
   floatingOrb2: {
     position: 'absolute' as const,
@@ -396,10 +397,10 @@ const styles = {
     right: '5rem',
     width: '24rem',
     height: '24rem',
-    background: 'linear-gradient(45deg, #a855f7, #ec4899)',
+    background: 'radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 50%, transparent 100%)',
     borderRadius: '50%',
     filter: 'blur(40px)',
-    animation: 'pulse 3s ease-in-out infinite 2s',
+    animation: 'pulse 4s ease-in-out infinite 2s',
   },
   floatingOrb3: {
     position: 'absolute' as const,
@@ -407,10 +408,10 @@ const styles = {
     left: '10rem',
     width: '20rem',
     height: '20rem',
-    background: 'linear-gradient(45deg, #f59e0b, #ef4444)',
+    background: 'radial-gradient(circle, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 50%, transparent 100%)',
     borderRadius: '50%',
     filter: 'blur(40px)',
-    animation: 'pulse 3s ease-in-out infinite 4s',
+    animation: 'pulse 4s ease-in-out infinite 4s',
   },
   heroContent: {
     position: 'relative' as const,
@@ -432,20 +433,19 @@ const styles = {
     backdropFilter: 'blur(10px)',
     marginBottom: '1.5rem',
     fontSize: '2rem',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
   },
   heroTitle: {
     fontSize: '3.5rem',
     fontWeight: 'bold',
-    background: 'linear-gradient(45deg, #06b6d4, #a855f7, #ec4899)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
+    color: '#ffffff',
     marginBottom: '1.5rem',
     lineHeight: 1.1,
+    textShadow: '0 2px 4px rgba(0,0,0,0.3)',
   },
   heroSubtitle: {
     fontSize: '1.25rem',
-    color: '#d1d5db',
+    color: '#a3a3a3',
     marginBottom: '2rem',
     lineHeight: 1.6,
   },
@@ -463,34 +463,37 @@ const styles = {
     flexShrink: 0,
     width: '3rem',
     height: '3rem',
-    background: 'linear-gradient(45deg, #06b6d4, #3b82f6)',
+    background: 'rgba(255, 255, 255, 0.1)',
     borderRadius: '0.75rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '1.5rem',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
   },
   featureIconPurple: {
     flexShrink: 0,
     width: '3rem',
     height: '3rem',
-    background: 'linear-gradient(45deg, #a855f7, #ec4899)',
+    background: 'rgba(255, 255, 255, 0.1)',
     borderRadius: '0.75rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '1.5rem',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
   },
   featureIconOrange: {
     flexShrink: 0,
     width: '3rem',
     height: '3rem',
-    background: 'linear-gradient(45deg, #f59e0b, #ef4444)',
+    background: 'rgba(255, 255, 255, 0.1)',
     borderRadius: '0.75rem',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
     fontSize: '1.5rem',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
   },
   featureTitle: {
     fontSize: '1.125rem',
@@ -499,7 +502,7 @@ const styles = {
     margin: 0,
   },
   featureDescription: {
-    color: '#9ca3af',
+    color: '#737373',
     margin: 0,
   },
   formSection: {
@@ -508,16 +511,16 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     padding: '2rem',
+    background: '#ffffff',
   },
   formCard: {
     width: '100%',
     maxWidth: '28rem',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(20px)',
+    backgroundColor: '#ffffff',
     borderRadius: '1.5rem',
     padding: '2rem',
     boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-    border: '1px solid rgba(255, 255, 255, 0.2)',
+    border: '1px solid #e5e5e5',
   },
   formHeader: {
     textAlign: 'center' as const,
@@ -526,11 +529,11 @@ const styles = {
   formTitle: {
     fontSize: '1.875rem',
     fontWeight: 'bold',
-    color: 'white',
+    color: '#000000',
     margin: '0 0 0.5rem 0',
   },
   formSubtitle: {
-    color: '#d1d5db',
+    color: '#525252',
     margin: 0,
   },
   form: {
@@ -546,15 +549,15 @@ const styles = {
   label: {
     fontSize: '0.875rem',
     fontWeight: '500',
-    color: '#e5e7eb',
+    color: '#262626',
   },
   input: {
     width: '100%',
     padding: '0.75rem 1rem',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    border: '2px solid rgba(255, 255, 255, 0.2)',
+    backgroundColor: '#ffffff',
+    border: '2px solid #e5e5e5',
     borderRadius: '0.75rem',
-    color: 'white',
+    color: '#000000',
     fontSize: '1rem',
     outline: 'none',
     transition: 'all 0.2s ease',
@@ -564,7 +567,7 @@ const styles = {
     flex: 1,
   },
   inputError: {
-    borderColor: '#ef4444',
+    borderColor: '#dc2626',
   },
   inputWithButton: {
     display: 'flex',
@@ -572,7 +575,7 @@ const styles = {
   },
   iconButton: {
     padding: '0.75rem',
-    background: 'linear-gradient(45deg, #06b6d4, #3b82f6)',
+    background: '#000000',
     color: 'white',
     border: 'none',
     borderRadius: '0.75rem',
@@ -583,7 +586,7 @@ const styles = {
   },
   iconButtonPurple: {
     padding: '0.75rem',
-    background: 'linear-gradient(45deg, #a855f7, #ec4899)',
+    background: '#000000',
     color: 'white',
     border: 'none',
     borderRadius: '0.75rem',
@@ -593,19 +596,19 @@ const styles = {
     outline: 'none',
   },
   errorMessage: {
-    color: '#ef4444',
+    color: '#dc2626',
     fontSize: '0.875rem',
     margin: 0,
   },
   helpText: {
-    color: '#9ca3af',
+    color: '#737373',
     fontSize: '0.75rem',
     margin: 0,
   },
   submitButton: {
     width: '100%',
     padding: '1rem 1.5rem',
-    background: 'linear-gradient(45deg, #06b6d4, #a855f7, #ec4899)',
+    background: '#000000',
     color: 'white',
     border: 'none',
     borderRadius: '0.75rem',
@@ -634,7 +637,7 @@ const styles = {
   formFooter: {
     marginTop: '2rem',
     paddingTop: '1.5rem',
-    borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+    borderTop: '1px solid #e5e5e5',
   },
   tips: {
     textAlign: 'center' as const,
@@ -642,7 +645,7 @@ const styles = {
   tipsTitle: {
     fontSize: '0.875rem',
     fontWeight: '500',
-    color: '#e5e7eb',
+    color: '#262626',
     margin: '0 0 0.75rem 0',
   },
   tipsList: {
@@ -651,7 +654,7 @@ const styles = {
     gap: '0.5rem',
   },
   tipItem: {
-    color: '#9ca3af',
+    color: '#737373',
     fontSize: '0.75rem',
     margin: 0,
   },

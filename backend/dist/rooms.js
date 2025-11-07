@@ -119,8 +119,26 @@ function makeOrLoadRoom(roomId) {
                     initialSnapshot,
                     onSessionRemoved(room, args) {
                         return __awaiter(this, void 0, void 0, function* () {
+                            console.log(`Session removed from room ${roomId}. Sessions remaining: ${args.numSessionsRemaining}`);
+                            // Clean up room when all participants leave
                             if (args.numSessionsRemaining === 0) {
-                                room.close();
+                                console.log(`All participants left room ${roomId}. Scheduling cleanup...`);
+                                // Wait 5 minutes before cleanup in case someone rejoins
+                                setTimeout(() => __awaiter(this, void 0, void 0, function* () {
+                                    if (room.getNumActiveSessions() === 0) {
+                                        console.log(`Cleaning up empty room ${roomId}`);
+                                        room.close();
+                                        rooms.delete(roomId);
+                                        mutexes.delete(roomId);
+                                        try {
+                                            yield (0, promises_1.rm)((0, path_1.join)('./rooms', roomId), { force: true, recursive: true });
+                                            console.log(`Room folder ${roomId} deleted successfully`);
+                                        }
+                                        catch (error) {
+                                            console.error(`Failed to delete room folder ${roomId}:`, error);
+                                        }
+                                    }
+                                }), 1 * 60 * 1000); // 5 minutes
                             }
                         });
                     },

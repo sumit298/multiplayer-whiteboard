@@ -140,10 +140,10 @@ const Whiteboard = () => {
 	const [scrollDisabled] = useState(params.scrollDisabled === 'true')
 	const [cameraLock] = useState(params.cameraLock === 'true')
 
-	// Handle leaving room and cleaning up
+	// Handle leaving room without clearing content
 	const handleLeaveRoom = async () => {
 		const confirmLeave = window.confirm(
-			'Are you sure you want to leave this room? This will delete all room contents permanently.'
+			'Are you sure you want to leave this room?'
 		)
 		
 		if (!confirmLeave) {
@@ -151,24 +151,25 @@ const Whiteboard = () => {
 		}
 		
 		try {
-			// Call backend to delete room and its contents
-			const response = await fetch(`${WORKER_URL}/rooms/${params.roomId}/leave`, {
-				method: 'DELETE',
+			// Just disconnect the user, don't delete room contents
+			const response = await fetch(`${WORKER_URL}/rooms/${params.roomId}/disconnect`, {
+				method: 'POST',
 				headers: {
 					'Authorization': `Bearer ${params.token}`,
 					'Content-Type': 'application/json'
-				}
+				},
+				body: JSON.stringify({ username: params.username })
 			})
 			
 			if (response.ok) {
-				console.log('Room contents deleted successfully')
+				console.log('Successfully disconnected from room')
 			} else {
-				console.warn('Failed to delete room contents:', response.statusText)
+				console.warn('Failed to disconnect from room:', response.statusText)
 			}
 		} catch (error) {
-			console.error('Error deleting room contents:', error)
+			console.error('Error disconnecting from room:', error)
 		} finally {
-			// Always navigate back to login, even if cleanup failed
+			// Always navigate back to login
 			navigate('/')
 		}
 	}
