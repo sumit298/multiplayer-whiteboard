@@ -18,8 +18,9 @@ const app = fastify({
   maxParamLength: 1024,
 })
 app.register(websocketPlugin)
-app.register(cors, { origin: '*' })
-
+app.register(cors, { 
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000'
+})
 
 
 // Room credentials storage - in production, use a database

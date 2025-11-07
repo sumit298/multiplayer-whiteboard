@@ -23,28 +23,6 @@ The custom authentication logic is implemented in `/src/server.ts` in the `valid
 
 Set an environment variable and compare tokens:
 
-```bash
-# In your .env file
-CUSTOM_AUTH_TOKEN=your_secret_token_here
-```
-
-**How it works:**
-- Client sends token in query param (WebSocket) or Authorization header (REST API)
-- Server compares token with `CUSTOM_AUTH_TOKEN` environment variable
-- Access granted if tokens match
-
-**Usage Examples:**
-```javascript
-// WebSocket connection
-const wsUrl = `ws://localhost:5959/?roomId=room123&token=your_secret_token_here`;
-
-// REST API call
-fetch('/rooms/room123', {
-  headers: {
-    'Authorization': 'Bearer your_secret_token_here'
-  }
-});
-```
 
 #### 2. JWT Authentication
 
