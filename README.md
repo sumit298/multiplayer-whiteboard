@@ -17,7 +17,8 @@ Backend: Node.js, Express, Socket.io
 Deployment: Vercel (frontend) + Render (backend)
 
 ## 🚀 Live Demo
-[whiteboard-frontend-v1.netlify.app/](whiteboard-frontend-v1.netlify.app/)
+[Live Demo](https://whiteboard-frontend-v1.netlify.app/)
+
 
 ## 📦 Run locally
 ```bash
@@ -25,3 +26,4 @@ git clone https://github.com/sumit298/multiplayer-whiteboard
 cd multiplayer-whiteboard
 npm install
 npm run dev
+
