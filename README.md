@@ -27,4 +27,3 @@ cd multiplayer-whiteboard
 npm install
 npm run dev
 
-
