@@ -35,7 +35,9 @@ const app = (0, fastify_1.default)({
     maxParamLength: 1024,
 });
 app.register(websocket_1.default);
-app.register(cors_1.default, { origin: '*' });
+app.register(cors_1.default, {
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000'
+});
 // Room credentials storage - in production, use a database
 const roomCredentials = new Map();
 // Function to validate room credentials

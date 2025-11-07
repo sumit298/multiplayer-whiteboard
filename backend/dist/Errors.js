@@ -28,6 +28,7 @@ exports.Errors = {
     },
     ACCOUNT_DISCONTINUED: {
         code: 4007,
+        message: "Your account has been discontinued.",
     },
     INVALID_PERMISSIONS: {
         code: 4008,
