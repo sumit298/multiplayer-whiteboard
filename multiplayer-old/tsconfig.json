@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",           // Updated target to ES2020
+    "module": "commonjs",
+    "lib": ["es2020"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "downlevelIteration": true    // Added this option
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
