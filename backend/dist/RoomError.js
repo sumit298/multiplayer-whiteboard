@@ -4,6 +4,7 @@ exports.RoomError = void 0;
 class RoomError extends Error {
     constructor(message, code = 400) {
         super(message);
+        this.name = 'RoomError';
         this.code = code;
     }
 }
